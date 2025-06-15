@@ -1,0 +1,9 @@
+Django
+djangorestframework
+psycopg2-binary
+djangorestframework-simplejwt
+drf-yasg
+django-cors-headers
+Pillow
+setuptools
+pyinstaller

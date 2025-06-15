@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: senaydin
+      POSTGRES_PASSWORD: senaydin.
+      POSTGRES_DB: db_project_management
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - django_network
+    ports:
+      - "5433:5432"
+  web:
+    build: .
+    entrypoint: /app/entrypoint.sh
+    volumes:
+      - ./project:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - django_network
+
+networks:
+  django_network:
+
+volumes:
+  postgres_data:
