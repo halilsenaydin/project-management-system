@@ -31,11 +31,14 @@ Ensure you have the following software installed on your machine:
 - **Visual Planning Tools**  
   Integration with Gantt charts and dashboards for visual project tracking.
 
+- **Microservices Architecture**  
+  Each service runs independently with its own database for better scalability and maintainability.
+
 ## Tech Stack
 
 - **Backend**: Django, Django REST Framework
-- **Database**: PostgreSQL / SQLite (dev)
-- **AI/Optimization**: Python (scikit-learn, ortools, etc.)
+- **Database**: PostgreSQL (one per microservice)
+- **Containerization & Orchestration**: Docker, Docker Compose
 
 ## Installation
 
@@ -50,10 +53,28 @@ cd project-management-system
 
 ## Running the Project
 
-### Running the Django Server
+### Using Docker Compose
 
-The project can be viewed at `localhost:8000`
+The project runs all microservices and their databases together via Docker Compose.
+
+To build and start all services:
 
 ```bash
 docker-compose up --build
+```
+
+- UserService will be accessible at: `http://localhost:8000`
+- ProjectService will be accessible at: `http://localhost:8001`
+- TaskService will be accessible at: `http://localhost:8002`
+
+Each service connects to its own dedicated PostgreSQL database running in a separate container.
+
+### Accessing Services Individually
+
+You can also start or rebuild individual services by specifying the service name:
+
+```bash
+docker-compose up --build user-service
+docker-compose up --build project-service
+docker-compose up --build task-service
 ```
