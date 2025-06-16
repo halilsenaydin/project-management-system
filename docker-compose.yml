@@ -1,27 +1,81 @@
 version: '3.8'
 
 services:
-  db:
+  user-db:
     image: postgres:16
     environment:
       POSTGRES_USER: senaydin
       POSTGRES_PASSWORD: senaydin.
-      POSTGRES_DB: db_project_management
+      POSTGRES_DB: db_user_service
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - user_db_data:/var/lib/postgresql/data
     networks:
       - django_network
     ports:
       - "5433:5432"
-  web:
-    build: .
+
+  project-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: senaydin
+      POSTGRES_PASSWORD: senaydin.
+      POSTGRES_DB: db_project_service
+    volumes:
+      - project_db_data:/var/lib/postgresql/data
+    networks:
+      - django_network
+    ports:
+      - "5434:5432"
+
+  task-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: senaydin
+      POSTGRES_PASSWORD: senaydin.
+      POSTGRES_DB: db_task_service
+    volumes:
+      - task_db_data:/var/lib/postgresql/data
+    networks:
+      - django_network
+    ports:
+      - "5435:5432"
+
+  user-service:
+    build:
+      context: ./user-service
     entrypoint: /app/entrypoint.sh
     volumes:
-      - ./project:/app
+      - ./user-service:/app
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      - user-db
+    networks:
+      - django_network
+
+  project-service:
+    build:
+      context: ./project-service
+    entrypoint: /app/entrypoint.sh
+    volumes:
+      - ./project-service:/app
+    ports:
+      - "8001:8000"
+    depends_on:
+      - project-db
+    networks:
+      - django_network
+
+  task-service:
+    build:
+      context: ./task-service
+    entrypoint: /app/entrypoint.sh
+    volumes:
+      - ./task-service:/app
+    ports:
+      - "8002:8000"
+    depends_on:
+      - task-db
     networks:
       - django_network
 
@@ -29,4 +83,6 @@ networks:
   django_network:
 
 volumes:
-  postgres_data:
+  user_db_data:
+  project_db_data:
+  task_db_data:
